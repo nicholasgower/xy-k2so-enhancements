@@ -1,3 +1,5 @@
+local util = require('util.util')
+
 local function add_additional_category(recipe, category)
     local prototype = data.raw['recipe'][recipe]
     if prototype then
@@ -58,35 +60,35 @@ if settings.startup['xy-processing-unit-alt'].value then
             {property = 'magnetic-field',
             min = 100,}
         }
-        data.raw['recipe']['cerys-processing-units-from-nitric-acid'].ingredients = {
+        util.replace_recipe_ingredients('cerys-processing-units-from-nitric-acid', {
             {type = 'item', name = 'electronic-circuit', amount = 3}, 
             {type = 'item', name = 'advanced-circuit', amount = 6},
             {type = 'fluid', name = 'kr-nitric-acid', amount = 10},
-        }
-        data.raw['recipe']['cerys-processing-units-from-nitric-acid'].results = {
+        })
+        util.replace_recipe_results('cerys-processing-units-from-nitric-acid', {
             {type = 'item', name = 'processing-unit', amount = 2},
-        }
+        })
     end
     if mods['Paracelsin'] then -- This recipe is supposed to be an upgrade to the rare metals recipe isntead of being forced usage, so reduced time and adv circuits
         data.raw['recipe']['paracelsin-processing-units-from-nitric-acid'].energy_required = 10
-        data.raw['recipe']['paracelsin-processing-units-from-nitric-acid'].ingredients = {
+        util.replace_recipe_ingredients('paracelsin-processing-units-from-nitric-acid', {
             {type = 'item', name = 'zinc-solder', amount = 3}, 
             {type = 'item', name = 'advanced-circuit', amount = 5},
             {type = 'fluid', name = 'nitric-acid', amount = 10},
-        }
-        data.raw['recipe']['paracelsin-processing-units-from-nitric-acid'].results = {
+        })
+        util.replace_recipe_results('paracelsin-processing-units-from-nitric-acid', {
             {type = 'item', name = 'processing-unit', amount = 2},
-        }
+        })
     end
     if mods['apia'] then -- Update to Apia's Processing Unit recipe to bring it in line with other K2SO Processing Unit recipes
-        data.raw['recipe']['processing-unit-from-phosphoric-acid'].ingredients = {
+        util.replace_recipe_ingredients('processing-unit-from-phosphoric-acid', {
             {type = 'item', name = 'polysaccharides', amount = 8},
             {type = 'item', name = 'advanced-circuit', amount = 6},
             {type = "fluid", name = "phosphoric-acid", amount = 10}
-        }
-        data.raw['recipe']['processing-unit-from-phosphoric-acid'].results = {
+        })
+        util.replace_recipe_results('processing-unit-from-phosphoric-acid', {
             {type = 'item', name = 'processing-unit', amount = 2},
-        }
+        })
     end
 
     --[[data.raw['recipe']['kr-bio-processing-circuit'].ingredients = { -- Patched into basically this in the main mod now
@@ -101,14 +103,14 @@ if settings.startup['xy-lab-recipe-changes'].value then
     data.raw['item']['biolab'].weight = 200 * kg
 
     if mods['Paracelsin'] and mods['planet-muluna'] then
-        data.raw.recipe['cryolab'].ingredients = {
+        util.replace_recipe_ingredients('cryolab', {
             {type = 'item', name = 'aluminum-plate', amount = 200},
             {type = 'item', name = 'quantum-processor', amount = 25},
             {type = 'item', name = 'electric-coil', amount = 25},
             {type = 'item', name = 'pentapod-egg', amount = 5},
             {type = 'item', name = 'biolab', amount = 3},
             {type = 'fluid', name = 'fluoroketone-cold', amount = 250},
-        }
+        })
     end
 end
 

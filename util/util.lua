@@ -116,6 +116,61 @@ local function replace_ingredient_name(recipe, old, new) -- Just for item names,
 end
 utils.replace_ingred_name = replace_ingredient_name
 
+--- Copies fluidbox metadata from old fluid entries to matching new entries.
+--- Recipe rewrites that replace the whole ingredient/result table otherwise
+--- discard indexes added by compatibility mods such as Muluna's data ports.
+--- @param old_entries table|nil
+--- @param new_entries table|nil
+local function copy_fluidbox_metadata(old_entries, new_entries)
+    for _, new_entry in ipairs(new_entries or {}) do
+        if new_entry.type == 'fluid' then
+            for _, old_entry in ipairs(old_entries or {}) do
+                if old_entry.type == 'fluid' and old_entry.name == new_entry.name then
+                    if old_entry.fluidbox_index ~= nil then
+                        new_entry.fluidbox_index = old_entry.fluidbox_index
+                    end
+                    if old_entry.optional_fluidbox_indexes ~= nil then
+                        new_entry.optional_fluidbox_indexes =
+                            table.deepcopy(old_entry.optional_fluidbox_indexes)
+                    end
+                    break
+                end
+            end
+        end
+    end
+end
+utils.copy_fluidbox_metadata = copy_fluidbox_metadata
+
+--- Replaces a recipe's ingredients while preserving fluidbox indexes.
+--- @param recipe_name string
+--- @param ingredients table
+--- @return table|nil recipe
+local function replace_recipe_ingredients(recipe_name, ingredients)
+    local recipe = data.raw.recipe[recipe_name]
+    if recipe == nil then
+        return nil
+    end
+    copy_fluidbox_metadata(recipe.ingredients, ingredients)
+    recipe.ingredients = ingredients
+    return recipe
+end
+utils.replace_recipe_ingredients = replace_recipe_ingredients
+
+--- Replaces a recipe's results while preserving fluidbox indexes.
+--- @param recipe_name string
+--- @param results table
+--- @return table|nil recipe
+local function replace_recipe_results(recipe_name, results)
+    local recipe = data.raw.recipe[recipe_name]
+    if recipe == nil then
+        return nil
+    end
+    copy_fluidbox_metadata(recipe.results, results)
+    recipe.results = results
+    return recipe
+end
+utils.replace_recipe_results = replace_recipe_results
+
 --- @param entity_type string
 --- @param entity_id string
 --- @param planet_id string
